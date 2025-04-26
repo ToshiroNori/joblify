@@ -41,7 +41,7 @@ export default function NavFooter() {
                 <span>Billing</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link to="/register">Sign out</Link>
+                <Link to="/login">Sign out</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
