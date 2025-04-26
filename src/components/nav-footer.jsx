@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronUp, User2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function NavFooter() {
   return (
@@ -40,7 +41,7 @@ export default function NavFooter() {
                 <span>Billing</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <span>Sign out</span>
+                <Link to="/register">Sign out</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
