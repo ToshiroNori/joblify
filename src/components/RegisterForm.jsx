@@ -135,7 +135,7 @@ export default function RegisterForm() {
                 <Label>Confirm password</Label>
                 <div className="relative">
                   <Input
-                    type={isShowPassword ? "text" : "password"} // Toggle password visibility
+                    type={isShowPassword2 ? "text" : "password"} // Toggle password visibility
                     placeholder="*******"
                   />
                   {isShowPassword2 ? (

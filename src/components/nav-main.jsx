@@ -1,5 +1,6 @@
 import React from "react";
-import { PlusCircleIcon, MailIcon } from "lucide-react";
+import { PlusCircleIcon, MailIcon, Send } from "lucide-react";
+import { Input } from "./ui/input";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -16,6 +17,8 @@ import {
   DialogContent,
   DialogDescription,
 } from "./ui/dialog";
+import { Label } from "@radix-ui/react-dropdown-menu";
+import { Textarea } from "./ui/textarea";
 
 export default function NavMain() {
   return (
@@ -37,9 +40,64 @@ export default function NavMain() {
                 <DialogHeader>
                   <DialogTitle>Create new job listing</DialogTitle>
                   <DialogDescription>
-                    Please fill out the form to create a new jobli
+                    Please fill out the form to create a new job
                   </DialogDescription>
                 </DialogHeader>
+                <div>
+                  <form className="space-y-2">
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="job-title">Job title</Label>
+                      <Input
+                        id="job-title"
+                        type="text"
+                        placeholder="ex. Software Engineer"
+                      />
+                    </div>
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="job-description">Job description</Label>
+                      <Input
+                        id="job-description"
+                        type="text"
+                        placeholder="Enter here a brief job description"
+                      />
+                    </div>
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="job-category">Job category</Label>
+                      <Input
+                        id="job-category"
+                        type="text"
+                        placeholder="ex. Software development"
+                      />
+                    </div>
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="job-location">Location</Label>
+                      <Input
+                        id="job-location"
+                        type="text"
+                        placeholder="ex. San Francisco, CA"
+                      />
+                    </div>
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="job-overview">Job overview</Label>
+                      <Textarea placeholder="Type your message here." />
+                      <p className="text-sm text-muted-foreground">
+                        Your message will be copied to the support team.
+                      </p>
+                    </div>
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="job-salary">Job salary</Label>
+                      <Input
+                        id="job-salary"
+                        type="number"
+                        placeholder="ex. $ 14,000"
+                      />
+                    </div>
+                    <Button className="w-full mt-2">
+                      Create job
+                      <Send />
+                    </Button>
+                  </form>
+                </div>
               </DialogContent>
             </Dialog>
             <Dialog>
