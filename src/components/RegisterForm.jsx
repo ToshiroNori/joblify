@@ -1,5 +1,6 @@
 import React from "react";
 import { countries } from "../lib/country";
+import { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -20,6 +21,7 @@ import {
 } from "./ui/select";
 
 export default function RegisterForm() {
+  const [userRole, setUserRole] = useState("");
   return (
     <div>
       <Card className="">
@@ -49,6 +51,53 @@ export default function RegisterForm() {
                 <Input type="email" placeholder="john.doe@example.com" />
               </div>
               <div className="grid gap-2">
+                <Label htmlFor="role">Choose your role</Label>
+                <Select
+                  id="role"
+                  value={userRole}
+                  onValueChange={(value) => {
+                    setUserRole(value);
+                    console.log(value);
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select your role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="candidate">Candidate</SelectItem>
+                    <SelectItem value="employer">Employer</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {userRole === "employer" && (
+                <>
+                  <div className="grid gap-2">
+                    <Label htmlFor="companyName">Company name</Label>
+                    <Input
+                      id="companyName"
+                      placeholder="Enter your company name"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="compSize">Company size</Label>
+                    <Select>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select your company size" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1-10">1-10 employees</SelectItem>
+                        <SelectItem value="11-50">11-50 employees</SelectItem>
+                        <SelectItem value="51-200">51-200 employees</SelectItem>
+                        <SelectItem value="201-500">
+                          201-500 employees
+                        </SelectItem>
+                        <SelectItem value="501+">501+ employees</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              )}
+              <div className="grid gap-2">
                 <Label>Password</Label>
                 <Input type="password" placeholder="*******" />
               </div>
@@ -56,18 +105,23 @@ export default function RegisterForm() {
                 <Label>Confirm password</Label>
                 <Input type="password" placeholder="*******" />
               </div>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select your country" />
-                </SelectTrigger>
-                <SelectContent>
-                  {countries.map((country, index) => (
-                    <SelectItem key={index} value={country.name}>
-                      {country.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="grid gap-2">
+                <Label>Choose your country</Label>
+                <Select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select your country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countries.map((country, index) => (
+                      <SelectItem key={index} value={country.name}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div></div>
               <Button className="">
                 Register
                 <Send />

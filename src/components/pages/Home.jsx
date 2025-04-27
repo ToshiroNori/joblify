@@ -38,9 +38,10 @@ export default function Home() {
         <div>
           <Card>
             <CardHeader>
-              <CardTitle>Welcome to Joblify</CardTitle>
+              <CardTitle>Welcome back Daryl Sabado!</CardTitle>
               <CardDescription>
-                This is a simple card component.
+                Feel free to browse through the job listings and find the
+                perfect match for you.
               </CardDescription>
             </CardHeader>
           </Card>
