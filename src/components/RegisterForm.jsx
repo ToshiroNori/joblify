@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { countries } from "../lib/country";
-import { useState } from "react";
+import { Eye, EyeOff, Send } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -11,7 +11,6 @@ import {
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { Send } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -22,9 +21,21 @@ import {
 
 export default function RegisterForm() {
   const [userRole, setUserRole] = useState("");
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isShowPassword2, setIsShowPassword2] = useState(false);
+  const [companySize, setCompanySize] = useState("");
+  const [country, setCountry] = useState("");
+
+  const handlePasswordVisibilityToggle = () => {
+    setIsShowPassword((prevState) => !prevState);
+  };
+  const handlePassword2VisibilityToggle = () => {
+    setIsShowPassword2((prevState) => !prevState);
+  };
+
   return (
     <div>
-      <Card className="">
+      <Card>
         <CardHeader>
           <CardTitle>
             <h1 className="text-3xl text-center">JobLify</h1>
@@ -35,7 +46,7 @@ export default function RegisterForm() {
         </CardHeader>
         <CardContent>
           <form>
-            <div className=" flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <div className="flex gap-2">
                 <div className="grid gap-2">
                   <Label>First name</Label>
@@ -80,7 +91,10 @@ export default function RegisterForm() {
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="compSize">Company size</Label>
-                    <Select>
+                    <Select
+                      value={companySize}
+                      onValueChange={(value) => setCompanySize(value)}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select your company size" />
                       </SelectTrigger>
@@ -99,15 +113,50 @@ export default function RegisterForm() {
               )}
               <div className="grid gap-2">
                 <Label>Password</Label>
-                <Input type="password" placeholder="*******" />
+                <div className="relative">
+                  <Input
+                    type={isShowPassword ? "text" : "password"} // Toggle password visibility
+                    placeholder="*******"
+                  />
+                  {isShowPassword ? (
+                    <Eye
+                      className="absolute top-0 right-0 translate-y-1.5 -translate-x-2 cursor-pointer"
+                      onClick={handlePasswordVisibilityToggle} // Toggle password visibility
+                    />
+                  ) : (
+                    <EyeOff
+                      className="absolute top-0 right-0 translate-y-1.5 -translate-x-2 cursor-pointer"
+                      onClick={handlePasswordVisibilityToggle} // Toggle password visibility
+                    />
+                  )}
+                </div>
               </div>
               <div className="grid gap-2">
                 <Label>Confirm password</Label>
-                <Input type="password" placeholder="*******" />
+                <div className="relative">
+                  <Input
+                    type={isShowPassword ? "text" : "password"} // Toggle password visibility
+                    placeholder="*******"
+                  />
+                  {isShowPassword2 ? (
+                    <Eye
+                      className="absolute top-0 right-0 translate-y-1.5 -translate-x-2 cursor-pointer"
+                      onClick={handlePassword2VisibilityToggle} // Toggle password visibility
+                    />
+                  ) : (
+                    <EyeOff
+                      className="absolute top-0 right-0 translate-y-1.5 -translate-x-2 cursor-pointer"
+                      onClick={handlePassword2VisibilityToggle} // Toggle password visibility
+                    />
+                  )}
+                </div>
               </div>
               <div className="grid gap-2">
                 <Label>Choose your country</Label>
-                <Select>
+                <Select
+                  value={country}
+                  onValueChange={(value) => setCountry(value)}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select your country" />
                   </SelectTrigger>
@@ -121,10 +170,8 @@ export default function RegisterForm() {
                 </Select>
               </div>
 
-              <div></div>
-              <Button className="">
-                Register
-                <Send />
+              <Button className="w-full mt-4">
+                Register <Send />
               </Button>
             </div>
           </form>
