@@ -1,5 +1,5 @@
 import React from "react";
-import { PlusCircleIcon, MailIcon, Send } from "lucide-react";
+import { PlusCircleIcon, MailIcon, FilePlus2 } from "lucide-react";
 import { Input } from "./ui/input";
 import {
   SidebarGroup,
@@ -94,7 +94,7 @@ export default function NavMain() {
                     </div>
                     <Button className="w-full mt-2">
                       Create job
-                      <Send />
+                      <FilePlus2 />
                     </Button>
                   </form>
                 </div>

@@ -1,6 +1,7 @@
 import React, { Children } from "react";
 import { SidebarProvider, SidebarTrigger } from "../../ui/sidebar";
 import AppSidebar from "../../AppSidebar";
+import { Input } from "@/components/ui/input";
 
 export default function Layout({ children }) {
   return (

@@ -9,7 +9,13 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { BriefcaseBusiness, MapPin, MailOpen, HandCoins } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  MapPin,
+  MailOpen,
+  HandCoins,
+  Search,
+} from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -19,12 +25,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { Input } from "../ui/input";
 
 export default function Home() {
   const [jobs, setJobs] = useState([]);
   useEffect(() => {
     const fetchJobs = async () => {
-      const response = await axios.get("https://jsonfakery.com/jobs/random/10");
+      const response = await axios.get("https://jsonfakery.com/jobs/random/20");
       setJobs(response.data);
     };
     fetchJobs();
@@ -34,7 +41,7 @@ export default function Home() {
   }, [jobs]);
   return (
     <Layout>
-      <div className="px-4">
+      <div className="px-4 space-y-2">
         <div>
           <Card>
             <CardHeader>
@@ -45,6 +52,13 @@ export default function Home() {
               </CardDescription>
             </CardHeader>
           </Card>
+        </div>
+        <div className="relative">
+          <Input className="px-8" placeholder="Search here..." />
+          <Search
+            color="#2c2c2c"
+            className=" absolute top-0 left-0 translate-y-1.5 translate-x-2"
+          />
         </div>
         <div className="mt-2 grid grid-cols-1 gap-2 lg:grid-cols-4">
           {jobs.map((job, index) => (

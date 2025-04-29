@@ -25,6 +25,7 @@ export default function RegisterForm() {
   const [isShowPassword2, setIsShowPassword2] = useState(false);
   const [companySize, setCompanySize] = useState("");
   const [country, setCountry] = useState("");
+  const [isMatch, setIsMatch] = useState(false);
 
   const handlePasswordVisibilityToggle = () => {
     setIsShowPassword((prevState) => !prevState);
