@@ -1,17 +1,47 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
+import { loginUser } from "@/features/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = ({ className, ...props }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, loading, error } = useSelector(
+    (state) => state.auth
+  );
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await dispatch(loginUser(formData));
+    } catch (error) {
+      console.log(error);
+    }
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  };
+  useEffect(() => {
+    console.log("User:", user);
+  }, []);
+  if (loading) {
+    return <div className="text-center">Loading...</div>;
+  }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form onSubmit={handleSubmit} className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -22,6 +52,10 @@ const LoginForm = ({ className, ...props }) => {
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
+                  value={formData.email}
+                  onChange={(e) => {
+                    setFormData({ ...formData, email: e.target.value });
+                  }}
                   id="email"
                   type="email"
                   placeholder="m@example.com"
@@ -38,7 +72,15 @@ const LoginForm = ({ className, ...props }) => {
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  value={formData.password}
+                  onChange={(e) => {
+                    setFormData({ ...formData, password: e.target.value });
+                  }}
+                  id="password"
+                  type="password"
+                  required
+                />
               </div>
               <Button type="submit" className="w-full">
                 Login
