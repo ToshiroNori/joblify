@@ -38,7 +38,6 @@ const LoginForm = ({ className, ...props }) => {
   useEffect(() => {
     if (!isAuthenticated && !loading) {
       navigate("/login");
-      return null;
     }
     if (isAuthenticated && !loading) {
       navigate("/");
