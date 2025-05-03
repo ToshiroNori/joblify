@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { countries } from "../lib/country";
 import { Eye, EyeOff, Send } from "lucide-react";
 import { registerUser } from "@/features/auth/authSlice";
@@ -21,11 +21,14 @@ import {
   SelectValue,
   SelectItem,
 } from "./ui/select";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowPassword2, setIsShowPassword2] = useState(false);
-  const [error, setError] = useState(null);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -33,64 +36,77 @@ export default function RegisterForm() {
     confirmPassword: "",
     role: "",
     contact: "",
-    companyName: "",
-    companySize: "",
-    country: "",
+    company: "",
+    company_size: "",
+    location: "",
   });
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
     }));
   };
 
-  const handleSubmit = () => {
-    const {
-      name,
-      email,
-      contact,
-      password,
-      confirmPassword,
-      role,
-      companyName,
-      companySize,
-      country,
-    } = formData;
-    if (
-      !name ||
-      !email ||
-      !contact ||
-      !password ||
-      !confirmPassword ||
-      !role ||
-      !country
-    ) {
-      setError("Please fill in all fields");
-    }
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-    }
-    if (role === "employer" && (!companyName || !companySize)) {
-      setError("Please fill in all fields");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const {
+        name,
+        contact,
+        email,
+        company,
+        company_size,
+        password,
+        confirmPassword,
+        role,
+        location,
+      } = formData;
+
+      // Basic validation
+      if (
+        !name ||
+        !email ||
+        !contact ||
+        !password ||
+        !confirmPassword ||
+        !role ||
+        !location
+      ) {
+        toast.error("Please fill in all required fields.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        toast.error("Passwords do not match.");
+        return;
+      }
+
+      // If role is 'employer', ensure company and company_size are filled out
+      if (role === "employer" && (!company || !company_size)) {
+        toast.error("Please complete all employer-specific fields.");
+        return;
+      }
+
+      // Create the payload for registration
+      let payload = { ...formData };
+
+      // Remove company and company_size fields for candidates
+      if (role === "candidate") {
+        delete payload.company;
+        delete payload.company_size;
+      }
+
+      // Dispatch the registration action with the correct payload
+      await dispatch(registerUser(payload)).unwrap();
+      toast.success("Registration successful!");
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.message);
     }
   };
-
-  const handlePasswordVisibilityToggle = () => {
-    setIsShowPassword((prev) => !prev);
-  };
-
-  const handlePassword2VisibilityToggle = () => {
-    setIsShowPassword2((prev) => !prev);
-  };
-
-  useEffect(() => {
-    console.log("Form data:", formData);
-  }, [formData]);
 
   return (
     <div>
@@ -104,7 +120,7 @@ export default function RegisterForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-4">
               <div className="grid gap-2">
                 <Label>Full name</Label>
@@ -155,20 +171,23 @@ export default function RegisterForm() {
               {formData.role === "employer" && (
                 <>
                   <div className="grid gap-2">
-                    <Label htmlFor="companyName">Company name</Label>
+                    <Label>Company name</Label>
                     <Input
-                      name="companyName"
+                      name="company"
                       placeholder="Enter your company name"
-                      value={formData.companyName}
+                      value={formData.company}
                       onChange={handleInputChange}
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="companySize">Company size</Label>
+                    <Label>Company size</Label>
                     <Select
-                      value={formData.companySize}
+                      value={formData.company_size}
                       onValueChange={(value) =>
-                        setFormData((prev) => ({ ...prev, companySize: value }))
+                        setFormData((prev) => ({
+                          ...prev,
+                          company_size: value,
+                        }))
                       }
                     >
                       <SelectTrigger className="w-full">
@@ -193,20 +212,20 @@ export default function RegisterForm() {
                 <div className="relative">
                   <Input
                     name="password"
+                    type={isShowPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={handleInputChange}
-                    type={isShowPassword ? "text" : "password"}
                     placeholder="*******"
                   />
                   {isShowPassword ? (
                     <Eye
                       className="absolute top-0 right-0 translate-y-1.5 -translate-x-2 cursor-pointer"
-                      onClick={handlePasswordVisibilityToggle}
+                      onClick={() => setIsShowPassword((prev) => !prev)}
                     />
                   ) : (
                     <EyeOff
                       className="absolute top-0 right-0 translate-y-1.5 -translate-x-2 cursor-pointer"
-                      onClick={handlePasswordVisibilityToggle}
+                      onClick={() => setIsShowPassword((prev) => !prev)}
                     />
                   )}
                 </div>
@@ -217,48 +236,48 @@ export default function RegisterForm() {
                 <div className="relative">
                   <Input
                     name="confirmPassword"
+                    type={isShowPassword2 ? "text" : "password"}
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    type={isShowPassword2 ? "text" : "password"}
                     placeholder="*******"
                   />
                   {isShowPassword2 ? (
                     <Eye
                       className="absolute top-0 right-0 translate-y-1.5 -translate-x-2 cursor-pointer"
-                      onClick={handlePassword2VisibilityToggle}
+                      onClick={() => setIsShowPassword2((prev) => !prev)}
                     />
                   ) : (
                     <EyeOff
                       className="absolute top-0 right-0 translate-y-1.5 -translate-x-2 cursor-pointer"
-                      onClick={handlePassword2VisibilityToggle}
+                      onClick={() => setIsShowPassword2((prev) => !prev)}
                     />
                   )}
                 </div>
               </div>
 
               <div className="grid gap-2">
-                <Label>Choose your country</Label>
+                <Label>Choose your location</Label>
                 <Select
-                  value={formData.country}
+                  value={formData.location}
                   onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, country: value }))
+                    setFormData((prev) => ({ ...prev, location: value }))
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select your country" />
+                    <SelectValue placeholder="Select your location" />
                   </SelectTrigger>
                   <SelectContent>
-                    {countries.map((country, index) => (
-                      <SelectItem key={index} value={country.name}>
-                        {country.name}
+                    {countries.map((location, index) => (
+                      <SelectItem key={index} value={location.name}>
+                        {location.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <Button className="w-full mt-4">
-                Register <Send />
+              <Button type="submit" className="w-full mt-4">
+                Register <Send className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </form>
