@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Layout from "../layout/employer/Layout";
+import { useSelector } from "react-redux";
+import { checkAuth } from "@/features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 import {
   Card,
   CardHeader,
@@ -29,23 +34,61 @@ import { Input } from "../ui/input";
 
 export default function Home() {
   const [jobs, setJobs] = useState([]);
-  useEffect(() => {
-    const fetchJobs = async () => {
-      const response = await axios.get("https://jsonfakery.com/jobs/random/20");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user, isAuthenticated, loading, error } = useSelector(
+    (state) => state.auth
+  );
+  const fetchJobs = async () => {
+    try {
+      const response = await axios.get("https://jsonfakery.com/jobs/random/5", {
+        withCredentials: false,
+      });
       setJobs(response.data);
-    };
-    fetchJobs();
-  }, []);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   useEffect(() => {
-    console.log(jobs);
+    dispatch(checkAuth());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate("/login");
+    }
+    if (isAuthenticated && !loading) {
+      fetchJobs();
+    }
+  }, [loading, isAuthenticated, navigate]);
+
+  useEffect(() => {
+    console.log("Jobs fetched:", jobs);
+    console.log("User data:", user);
   }, [jobs]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen w-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-black border-t-transparent"></div>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen w-screen">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
+  }
   return (
     <Layout>
       <div className="px-4 space-y-2">
         <div>
           <Card>
             <CardHeader>
-              <CardTitle>Welcome back Daryl Sabado!</CardTitle>
+              <CardTitle>Welcome back {user?.name}</CardTitle>
               <CardDescription>
                 Feel free to browse through the job listings and find the
                 perfect match for you.

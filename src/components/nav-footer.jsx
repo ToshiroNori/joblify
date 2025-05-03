@@ -17,8 +17,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronUp, User2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "@/features/auth/authSlice";
 
 export default function NavFooter() {
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch(logoutUser());
+  };
   return (
     <SidebarFooter>
       <SidebarMenu>
@@ -40,8 +46,14 @@ export default function NavFooter() {
               <DropdownMenuItem>
                 <span>Billing</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link to="/login">Sign out</Link>
+              <DropdownMenuItem asChild>
+                <button
+                  oncClick={() => {
+                    dispatch(logoutUser());
+                  }}
+                >
+                  Sign out
+                </button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

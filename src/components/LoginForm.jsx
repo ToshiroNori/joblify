@@ -6,9 +6,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import { loginUser } from "@/features/auth/authSlice";
+import { loginUser, checkAuth } from "@/features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { resetError } from "@/features/auth/authSlice";
 
 const LoginForm = ({ className, ...props }) => {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ const LoginForm = ({ className, ...props }) => {
     email: "",
     password: "",
   });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -27,16 +29,47 @@ const LoginForm = ({ className, ...props }) => {
     } catch (error) {
       console.log(error);
     }
-    if (isAuthenticated) {
+  };
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!isAuthenticated && !loading) {
+      navigate("/login");
+    }
+    if (isAuthenticated && !loading) {
       navigate("/");
     }
-  };
-  useEffect(() => {
-    console.log("User:", user);
-  }, []);
+  }, [isAuthenticated, loading, navigate]);
+
   if (loading) {
-    return <div className="text-center">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen w-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-black border-t-transparent"></div>
+      </div>
+    );
   }
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen w-screen">
+        <div className="text-red-500 text-center space-y-4">
+          <p>{error}</p>
+          <Link
+            onClick={() => {
+              dispatch(resetError());
+            }}
+            to="/login"
+            className="text-blue-500 underline"
+          >
+            Go to Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
@@ -82,7 +115,7 @@ const LoginForm = ({ className, ...props }) => {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button disabled={loading} type="submit" className="w-full">
                 Login
               </Button>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
