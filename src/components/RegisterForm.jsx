@@ -25,6 +25,7 @@ import {
 export default function RegisterForm() {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowPassword2, setIsShowPassword2] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -46,6 +47,37 @@ export default function RegisterForm() {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const handleSubmit = () => {
+    const {
+      name,
+      email,
+      contact,
+      password,
+      confirmPassword,
+      role,
+      companyName,
+      companySize,
+      country,
+    } = formData;
+    if (
+      !name ||
+      !email ||
+      !contact ||
+      !password ||
+      !confirmPassword ||
+      !role ||
+      !country
+    ) {
+      setError("Please fill in all fields");
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+    }
+    if (role === "employer" && (!companyName || !companySize)) {
+      setError("Please fill in all fields");
+    }
   };
 
   const handlePasswordVisibilityToggle = () => {
