@@ -50,12 +50,12 @@ export default function Home() {
     }
   };
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !loading) {
       fetchJobs();
     } else {
       navigate("/login"); // Redirect unauthenticated users to the login page
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, loading, navigate]);
 
   useEffect(() => {
     console.log("Jobs fetched:", jobs);
