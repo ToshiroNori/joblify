@@ -50,14 +50,12 @@ export default function Home() {
     }
   };
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      navigate("/");
-      return null;
-    }
-    if (isAuthenticated && !loading) {
+    if (isAuthenticated) {
       fetchJobs();
+    } else {
+      navigate("/login"); // Redirect unauthenticated users to the login page
     }
-  }, [loading, isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     console.log("Jobs fetched:", jobs);
@@ -70,10 +68,6 @@ export default function Home() {
         <div className="animate-spin rounded-full h-16 w-16 border-4 border-black border-t-transparent"></div>
       </div>
     );
-  }
-
-  if (!isAuthenticated) {
-    return null; // or a redirect fallback if needed
   }
 
   return (
