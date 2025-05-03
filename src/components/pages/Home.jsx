@@ -56,7 +56,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      navigate("/login");
+      navigate("/");
     }
     if (isAuthenticated && !loading) {
       fetchJobs();
