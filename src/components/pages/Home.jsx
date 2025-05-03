@@ -49,14 +49,10 @@ export default function Home() {
       console.log(error.message);
     }
   };
-
-  useEffect(() => {
-    dispatch(checkAuth());
-  }, [dispatch]);
-
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       navigate("/");
+      return null;
     }
     if (isAuthenticated && !loading) {
       fetchJobs();
@@ -74,6 +70,10 @@ export default function Home() {
         <div className="animate-spin rounded-full h-16 w-16 border-4 border-black border-t-transparent"></div>
       </div>
     );
+  }
+
+  if (!isAuthenticated) {
+    return null; // or a redirect fallback if needed
   }
 
   return (
@@ -102,7 +102,7 @@ export default function Home() {
             <div key={index} className="cursor-pointer">
               <Card>
                 <CardHeader className="space-y-3">
-                  <CardTitle className="text-2x1 ">{job.title}</CardTitle>
+                  <CardTitle className="text-2xl ">{job.title}</CardTitle>
                   <CardDescription className="">
                     {job.description}
                   </CardDescription>
