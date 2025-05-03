@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { countries } from "../lib/country";
 import { Eye, EyeOff, Send } from "lucide-react";
+import { registerUser } from "@/features/auth/authSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -20,19 +23,42 @@ import {
 } from "./ui/select";
 
 export default function RegisterForm() {
-  const [userRole, setUserRole] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowPassword2, setIsShowPassword2] = useState(false);
-  const [companySize, setCompanySize] = useState("");
-  const [country, setCountry] = useState("");
-  const [isMatch, setIsMatch] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "",
+    contact: "",
+    companyName: "",
+    companySize: "",
+    country: "",
+  });
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const handlePasswordVisibilityToggle = () => {
-    setIsShowPassword((prevState) => !prevState);
+    setIsShowPassword((prev) => !prev);
   };
+
   const handlePassword2VisibilityToggle = () => {
-    setIsShowPassword2((prevState) => !prevState);
+    setIsShowPassword2((prev) => !prev);
   };
+
+  useEffect(() => {
+    console.log("Form data:", formData);
+  }, [formData]);
 
   return (
     <div>
@@ -48,29 +74,41 @@ export default function RegisterForm() {
         <CardContent>
           <form>
             <div className="flex flex-col gap-4">
-              <div className="flex gap-2">
-                <div className="grid gap-2">
-                  <Label>First name</Label>
-                  <Input placeholder="John" />
-                </div>
-                <div className="grid gap-2">
-                  <Label>Last name</Label>
-                  <Input placeholder="Doe" />
-                </div>
+              <div className="grid gap-2">
+                <Label>Full name</Label>
+                <Input
+                  name="name"
+                  placeholder="John"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label>Contact</Label>
+                <Input
+                  name="contact"
+                  placeholder="ex. 0912542545"
+                  value={formData.contact}
+                  onChange={handleInputChange}
+                />
               </div>
               <div className="grid gap-2">
                 <Label>Email</Label>
-                <Input type="email" placeholder="john.doe@example.com" />
+                <Input
+                  name="email"
+                  type="email"
+                  placeholder="john.doe@example.com"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="role">Choose your role</Label>
                 <Select
-                  id="role"
-                  value={userRole}
-                  onValueChange={(value) => {
-                    setUserRole(value);
-                    console.log(value);
-                  }}
+                  value={formData.role}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, role: value }))
+                  }
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select your role" />
@@ -81,30 +119,35 @@ export default function RegisterForm() {
                   </SelectContent>
                 </Select>
               </div>
-              {userRole === "employer" && (
+
+              {formData.role === "employer" && (
                 <>
                   <div className="grid gap-2">
                     <Label htmlFor="companyName">Company name</Label>
                     <Input
-                      id="companyName"
+                      name="companyName"
                       placeholder="Enter your company name"
+                      value={formData.companyName}
+                      onChange={handleInputChange}
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="compSize">Company size</Label>
+                    <Label htmlFor="companySize">Company size</Label>
                     <Select
-                      value={companySize}
-                      onValueChange={(value) => setCompanySize(value)}
+                      value={formData.companySize}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({ ...prev, companySize: value }))
+                      }
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select your company size" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="1-10">1-10 employees</SelectItem>
-                        <SelectItem value="11-50">11-50 employees</SelectItem>
-                        <SelectItem value="51-200">51-200 employees</SelectItem>
+                        <SelectItem value="1-10">1–10 employees</SelectItem>
+                        <SelectItem value="11-50">11–50 employees</SelectItem>
+                        <SelectItem value="51-200">51–200 employees</SelectItem>
                         <SelectItem value="201-500">
-                          201-500 employees
+                          201–500 employees
                         </SelectItem>
                         <SelectItem value="501+">501+ employees</SelectItem>
                       </SelectContent>
@@ -112,51 +155,62 @@ export default function RegisterForm() {
                   </div>
                 </>
               )}
+
               <div className="grid gap-2">
                 <Label>Password</Label>
                 <div className="relative">
                   <Input
-                    type={isShowPassword ? "text" : "password"} // Toggle password visibility
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    type={isShowPassword ? "text" : "password"}
                     placeholder="*******"
                   />
                   {isShowPassword ? (
                     <Eye
                       className="absolute top-0 right-0 translate-y-1.5 -translate-x-2 cursor-pointer"
-                      onClick={handlePasswordVisibilityToggle} // Toggle password visibility
+                      onClick={handlePasswordVisibilityToggle}
                     />
                   ) : (
                     <EyeOff
                       className="absolute top-0 right-0 translate-y-1.5 -translate-x-2 cursor-pointer"
-                      onClick={handlePasswordVisibilityToggle} // Toggle password visibility
+                      onClick={handlePasswordVisibilityToggle}
                     />
                   )}
                 </div>
               </div>
+
               <div className="grid gap-2">
                 <Label>Confirm password</Label>
                 <div className="relative">
                   <Input
-                    type={isShowPassword2 ? "text" : "password"} // Toggle password visibility
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    type={isShowPassword2 ? "text" : "password"}
                     placeholder="*******"
                   />
                   {isShowPassword2 ? (
                     <Eye
                       className="absolute top-0 right-0 translate-y-1.5 -translate-x-2 cursor-pointer"
-                      onClick={handlePassword2VisibilityToggle} // Toggle password visibility
+                      onClick={handlePassword2VisibilityToggle}
                     />
                   ) : (
                     <EyeOff
                       className="absolute top-0 right-0 translate-y-1.5 -translate-x-2 cursor-pointer"
-                      onClick={handlePassword2VisibilityToggle} // Toggle password visibility
+                      onClick={handlePassword2VisibilityToggle}
                     />
                   )}
                 </div>
               </div>
+
               <div className="grid gap-2">
                 <Label>Choose your country</Label>
                 <Select
-                  value={country}
-                  onValueChange={(value) => setCountry(value)}
+                  value={formData.country}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, country: value }))
+                  }
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select your country" />

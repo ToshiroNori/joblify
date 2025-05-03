@@ -31,14 +31,14 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Input } from "../ui/input";
+import { useAuthGuard } from "@/hooks/authGuard";
 
 export default function Home() {
   const [jobs, setJobs] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, isAuthenticated, loading, error } = useSelector(
-    (state) => state.auth
-  );
+  const { user, isAuthenticated, loading, error } = useAuthGuard();
+
   const fetchJobs = async () => {
     try {
       const response = await axios.get("https://jsonfakery.com/jobs/random/5", {
@@ -75,13 +75,7 @@ export default function Home() {
       </div>
     );
   }
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen w-screen">
-        <div className="text-red-500">{error}</div>
-      </div>
-    );
-  }
+
   return (
     <Layout>
       <div className="px-4 space-y-2">

@@ -44,32 +44,6 @@ const LoginForm = ({ className, ...props }) => {
     }
   }, [isAuthenticated, loading, navigate]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen w-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-4 border-black border-t-transparent"></div>
-      </div>
-    );
-  }
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen w-screen">
-        <div className="text-red-500 text-center space-y-4">
-          <p>{error}</p>
-          <Link
-            onClick={() => {
-              dispatch(resetError());
-            }}
-            to="/login"
-            className="text-blue-500 underline"
-          >
-            Go to Login
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">

@@ -48,7 +48,7 @@ export default function NavFooter() {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <button
-                  oncClick={() => {
+                  onClick={() => {
                     dispatch(logoutUser());
                   }}
                 >
