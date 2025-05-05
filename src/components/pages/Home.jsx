@@ -82,11 +82,11 @@ export default function Home() {
             <CardHeader>
               <CardTitle>Welcome back {user?.name}</CardTitle>
               <CardDescription>
-                {user.isActivated
+                {user?.isActivated
                   ? "Feel free to browse through the job listings and find the perfect match for you."
                   : "Activate your account first to browse through the job listings and find the perfect match for you."}
               </CardDescription>
-              {!user.isActivated && (
+              {!user?.isActivated && (
                 <CardContent className="space-y-4 mt-5">
                   <Label>One-Time Password</Label>
                   <InputOTP maxLength={6} value={otp} onChange={setOtp}>
@@ -112,7 +112,7 @@ export default function Home() {
             </CardHeader>
           </Card>
         </div>
-        {user.isActivated && (
+        {user?.isActivated && (
           <div className="relative">
             <Input className="px-8" placeholder="Search here..." />
             <Search
