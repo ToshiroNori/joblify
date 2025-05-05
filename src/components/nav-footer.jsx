@@ -19,9 +19,11 @@ import { ChevronUp, User2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "@/features/auth/authSlice";
+import { useSelector } from "react-redux";
 
 export default function NavFooter() {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth); // Assuming you have a user object in your auth slice
   const handleLogout = () => {
     dispatch(logoutUser());
   };
@@ -32,7 +34,7 @@ export default function NavFooter() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton>
-                <User2 /> Daryl Sabado
+                <User2 /> {user.name}
                 <ChevronUp className="ml-auto" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>

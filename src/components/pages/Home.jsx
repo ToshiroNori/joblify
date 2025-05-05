@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Layout from "../layout/employer/Layout";
-import { useSelector } from "react-redux";
-import { checkAuth } from "@/features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
@@ -32,12 +30,20 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { useAuthGuard } from "@/hooks/authGuard";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "../ui/input-otp";
+import { Label } from "../ui/label";
 
 export default function Home() {
   const [jobs, setJobs] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, isAuthenticated, loading, error } = useAuthGuard();
+  const [otp, setOtp] = useState("");
 
   const fetchJobs = async () => {
     try {
@@ -58,7 +64,7 @@ export default function Home() {
   useEffect(() => {
     console.log("Jobs fetched:", jobs);
     console.log("User data:", user);
-  }, [jobs]);
+  }, [jobs, otp]);
 
   if (loading) {
     return (
@@ -76,19 +82,46 @@ export default function Home() {
             <CardHeader>
               <CardTitle>Welcome back {user?.name}</CardTitle>
               <CardDescription>
-                Feel free to browse through the job listings and find the
-                perfect match for you.
+                {user.isActivated
+                  ? "Feel free to browse through the job listings and find the perfect match for you."
+                  : "Activate your account first to browse through the job listings and find the perfect match for you."}
               </CardDescription>
+              {!user.isActivated && (
+                <CardContent className="space-y-4 mt-5">
+                  <Label>One-Time Password</Label>
+                  <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                    </InputOTPGroup>
+                    <InputOTPSeparator />
+                    <InputOTPGroup>
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                    </InputOTPGroup>
+                    <InputOTPSeparator />
+                    <InputOTPGroup>
+                      <InputOTPSlot index={4} />
+                      <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                  </InputOTP>
+
+                  <Button>Submit</Button>
+                </CardContent>
+              )}
             </CardHeader>
           </Card>
         </div>
-        <div className="relative">
-          <Input className="px-8" placeholder="Search here..." />
-          <Search
-            color="#2c2c2c"
-            className=" absolute top-0 left-0 translate-y-1.5 translate-x-2"
-          />
-        </div>
+        {user.isActivated && (
+          <div className="relative">
+            <Input className="px-8" placeholder="Search here..." />
+            <Search
+              color="#2c2c2c"
+              className=" absolute top-0 left-0 translate-y-1.5 translate-x-2"
+            />
+          </div>
+        )}
+
         <div className="mt-2 grid grid-cols-1 gap-2 lg:grid-cols-4">
           {jobs.map((job, index) => (
             <div key={index} className="cursor-pointer">
