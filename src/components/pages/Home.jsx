@@ -75,7 +75,7 @@ export default function Home() {
     if (verify_success) {
       navigate(0);
     }
-  }, [success, navigate]);
+  }, [verify_success, navigate]);
 
   if (loading) {
     return (
@@ -97,7 +97,7 @@ export default function Home() {
                   ? "Feel free to browse through the job listings and find the perfect match for you."
                   : "Activate your account first to browse through the job listings and find the perfect match for you."}
               </CardDescription>
-              {!user?.isActivated && (
+              {!user?.isActivated && !verify_success && (
                 <CardContent className="space-y-4 mt-5">
                   <Label>One-Time Password</Label>
                   <InputOTP maxLength={6} value={otp} onChange={setOtp}>
@@ -117,15 +117,16 @@ export default function Home() {
                     </InputOTPGroup>
                   </InputOTP>
                   <CardDescription>
-                    Didn't receive the OTP?{" "}
-                    <span
+                    Didn't receive the OTP?
+                    <Button
+                      variant="link"
                       className="text-blue-500 cursor-pointer"
                       onClick={() => {
                         dispatch(sendOTP());
                       }}
                     >
                       Resend
-                    </span>
+                    </Button>
                   </CardDescription>
 
                   <Button
