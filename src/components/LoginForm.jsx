@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 import { loginUser, checkAuth } from "@/features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { resetError } from "@/features/auth/authSlice";
 
 const LoginForm = ({ className, ...props }) => {
   const dispatch = useDispatch();

@@ -101,7 +101,7 @@ export default function NavMain() {
               </DialogContent>
             </Dialog>
             <Dialog>
-              <DialogTrigger>
+              <DialogTrigger asChild>
                 <Button
                   size="icon"
                   className="h-9 w-9 shrink-0 group-data-[collapsible=icon]:opacity-0"
